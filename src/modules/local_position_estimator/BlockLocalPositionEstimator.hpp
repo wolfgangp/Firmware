@@ -22,6 +22,7 @@
 #include <uORB/topics/vehicle_gps_position.h>
 #include <uORB/topics/att_pos_mocap.h>
 #include <uORB/topics/landing_target_pose.h>
+#include <uORB/topics/vehicle_airdata.h>
 
 // uORB Publications
 #include <uORB/Publication.hpp>
@@ -260,6 +261,7 @@ private:
 	uORB::Subscription<distance_sensor_s> *_sub_lidar;
 	uORB::Subscription<distance_sensor_s> *_sub_sonar;
 	uORB::Subscription<landing_target_pose_s> _sub_landing_target_pose;
+	uORB::Subscription<vehicle_airdata_s> _sub_airdata;
 
 	// publications
 	uORB::Publication<vehicle_local_position_s> _pub_lpos;

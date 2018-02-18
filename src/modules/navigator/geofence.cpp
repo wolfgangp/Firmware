@@ -61,7 +61,8 @@ Geofence::Geofence(Navigator *navigator) :
 	_param_source(this, "GF_SOURCE", false),
 	_param_counter_threshold(this, "GF_COUNT", false),
 	_param_max_hor_distance(this, "GF_MAX_HOR_DIST", false),
-	_param_max_ver_distance(this, "GF_MAX_VER_DIST", false)
+	_param_max_ver_distance(this, "GF_MAX_VER_DIST", false),
+	_sub_airdata(ORB_ID(vehicle_airdata))
 {
 	// we assume there's no concurrent fence update on startup
 	_updateFence();
@@ -188,15 +189,13 @@ bool Geofence::checkAll(const struct vehicle_global_position_s &global_position)
 	return checkAll(global_position.lat, global_position.lon, global_position.alt);
 }
 
-bool Geofence::checkAll(const struct vehicle_global_position_s &global_position, float baro_altitude_amsl)
+bool Geofence::checkAll(const struct vehicle_global_position_s &global_position, const float alt)
 {
-	return checkAll(global_position.lat, global_position.lon, baro_altitude_amsl);
+	return checkAll(global_position.lat, global_position.lon, alt);
 }
 
-
-bool Geofence::check(const struct vehicle_global_position_s &global_position,
-		     const struct vehicle_gps_position_s &gps_position, float baro_altitude_amsl,
-		     const struct home_position_s home_pos, bool home_position_set)
+bool Geofence::check(const vehicle_global_position_s &global_position, const vehicle_gps_position_s &gps_position,
+		     const home_position_s home_pos, bool home_position_set)
 {
 	if (getAltitudeMode() == Geofence::GF_ALT_MODE_WGS84) {
 		if (getSource() == Geofence::GF_SOURCE_GLOBALPOS) {
@@ -208,12 +207,15 @@ bool Geofence::check(const struct vehicle_global_position_s &global_position,
 		}
 
 	} else {
+		// get baro altitude
+		_sub_airdata.update();
+		const float baro_altitude_amsl = _sub_airdata.get().baro_alt_meter;
+
 		if (getSource() == Geofence::GF_SOURCE_GLOBALPOS) {
 			return checkAll(global_position, baro_altitude_amsl);
 
 		} else {
-			return checkAll((double)gps_position.lat * 1.0e-7, (double)gps_position.lon * 1.0e-7,
-					baro_altitude_amsl);
+			return checkAll((double)gps_position.lat * 1.0e-7, (double)gps_position.lon * 1.0e-7, baro_altitude_amsl);
 		}
 	}
 }

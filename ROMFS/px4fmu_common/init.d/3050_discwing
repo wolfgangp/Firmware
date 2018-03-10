@@ -1,0 +1,25 @@
+#!nsh
+#
+# @name Generic Flying Wing
+#
+# @type Flying Wing
+# @class Plane
+#
+# @maintainer
+#
+
+sh /etc/init.d/rc.fw_discwing
+
+if [ $AUTOCNF == yes ]
+then
+	param set FW_AIRSPD_MAX 40.0
+	param set FW_AIRSPD_MIN 0.1
+	param set FW_AIRSPD_TRIM 40.0
+	param set FW_R_TC 0.2
+	param set FW_P_TC 0.2
+	param set FW_L1_DAMPING 0.74
+	param set FW_L1_PERIOD 12
+fi
+
+set MAV_TYPE 1
+set MIXER discwing

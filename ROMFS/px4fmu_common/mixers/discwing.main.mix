@@ -1,0 +1,20 @@
+Disc wing mixer
+===========================
+
+This file defines mixers suitable for not controlling a disc wing.
+The configuration assumes the elevon servos are connected to servo
+outputs 0 and 1 and the motor speed control to output 3. Output 2 is
+assumed to be unused.
+
+Inputs to the mixer come from channel group 0 (vehicle attitude), channels 0
+(roll), 1 (pitch) and 3 (thrust).
+
+See the README for more information on the scaler format.
+
+
+Null mixer.
+A null mixer consumes no controls and generates a single actuator output whose
+value is always zero. Typically a null mixer is used as a placeholder in a
+collection of mixers in order to achieve a specific pattern of actuator outputs.
+
+Z:
